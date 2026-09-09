@@ -717,14 +717,14 @@ export const OfficialPlanningModal: React.FC<OfficialPlanningModalProps> = ({
                   <p className="font-extrabold text-[13px] text-black tracking-tight uppercase">
                     {settings?.universite || "Établissement Universitaire"}
                   </p>
-                  {settings?.faculteInstitut && (
+                  {settings?.departement && (
                     <p className="text-[11px] font-bold text-slate-800">
-                      {settings.faculteInstitut}
+                      {settings.departement}
                     </p>
                   )}
-                  {settings?.departement && (
+                  {settings?.faculteInstitut && (
                     <p className="text-[11px] font-semibold text-slate-700">
-                      {settings.departement}
+                      {settings.faculteInstitut}
                     </p>
                   )}
                 </div>

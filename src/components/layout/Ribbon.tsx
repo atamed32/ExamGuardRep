@@ -71,6 +71,7 @@ interface RibbonProps {
   onSelectThemeMode?: (mode: ThemeMode) => void;
   onSelectAccentColor?: (accent: AccentColor) => void;
   onOpenOfficialPlanning?: (type: 'global' | 'promotion') => void;
+  onOpenAbout?: () => void;
 }
 
 export const Ribbon: React.FC<RibbonProps> = ({
@@ -98,7 +99,8 @@ export const Ribbon: React.FC<RibbonProps> = ({
   onCycleTheme,
   onSelectThemeMode,
   onSelectAccentColor,
-  onOpenOfficialPlanning
+  onOpenOfficialPlanning,
+  onOpenAbout
 }) => {
   const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
   const langMenuRef = useRef<HTMLDivElement>(null);
@@ -994,6 +996,22 @@ export const Ribbon: React.FC<RibbonProps> = ({
         {/* HELP TAB CONTROLS */}
         {activeTab === 'help' && (
           <div className="flex items-center gap-2 flex-wrap py-1">
+            <button
+              onClick={() => {
+                if (onOpenAbout) {
+                  onOpenAbout();
+                }
+              }}
+              className={`px-3 py-1.5 rounded font-medium flex items-center space-x-1.5 rtl:space-x-reverse border transition ${
+                isLight
+                  ? 'bg-white text-slate-700 border-slate-300 hover:bg-slate-100 shadow-2xs'
+                  : 'bg-slate-900 text-slate-200 border-slate-700 hover:bg-slate-750'
+              }`}
+              title="Informations sur ExamGuard, version et auteur"
+            >
+              <HelpCircle className="w-3.5 h-3.5 text-indigo-500 dark:text-indigo-400" />
+              <span>À propos</span>
+            </button>
             <span className="text-xs text-slate-500 dark:text-slate-400 font-medium italic">
               Guide d'utilisation et aide pour ExamGuard
             </span>

@@ -123,6 +123,7 @@ export const BatchConvocationsModal: React.FC<BatchConvocationsModalProps> = ({
               language={language}
               documentId={`batch-card-${teacher.id}`}
               isPrintOnly={false}
+              teachers={teachers}
             />
           </div>
         ))}

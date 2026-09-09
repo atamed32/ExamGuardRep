@@ -650,6 +650,7 @@ export function App() {
         onCycleTheme={handleCycleTheme}
         onSelectThemeMode={handleSelectThemeMode}
         onSelectAccentColor={handleSelectAccentColor}
+        onOpenAbout={() => setIsAboutModalOpen(true)}
       />
 
       {/* Main Workspace Area */}

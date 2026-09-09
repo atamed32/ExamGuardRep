@@ -7,7 +7,6 @@ import {
   Language, 
   RoleInExam 
 } from '../../types';
-import { translations } from '../../services/i18n';
 
 interface OfficialDocumentCardProps {
   teacher: Teacher;
@@ -17,6 +16,7 @@ interface OfficialDocumentCardProps {
   language: Language;
   documentId?: string;
   isPrintOnly?: boolean;
+  teachers?: Teacher[];
 }
 
 export const OfficialDocumentCard: React.FC<OfficialDocumentCardProps> = ({
@@ -24,12 +24,30 @@ export const OfficialDocumentCard: React.FC<OfficialDocumentCardProps> = ({
   exams,
   rooms,
   settings,
-  language,
+  language: _language,
   documentId = `convocation-doc-${teacher.id}`,
-  isPrintOnly = false
+  isPrintOnly = false,
+  teachers = []
 }) => {
-  const t = translations[language];
   const roomMap = new Map<string, Room>(rooms.map(r => [r.id, r]));
+  const teacherMap = new Map<string, Teacher>(
+    (teachers.length > 0 ? teachers : [teacher]).map(item => [item.id, item])
+  );
+
+  const formatResponsableName = (exam: Exam): string => {
+    const fromId = exam.responsableId ? teacherMap.get(exam.responsableId) : undefined;
+    if (fromId) {
+      return `${fromId.nom} ${fromId.prenom}`.trim();
+    }
+    for (const salle of exam.salles || []) {
+      const sv = (salle.surveillants || []).find(s => s.role === 'Responsable de Matière');
+      if (sv) {
+        const found = teacherMap.get(sv.teacherId);
+        if (found) return `${found.nom} ${found.prenom}`.trim();
+      }
+    }
+    return '';
+  };
 
   // Extract all surveillance slots for this teacher
   interface TeacherSlot {
@@ -93,9 +111,12 @@ export const OfficialDocumentCard: React.FC<OfficialDocumentCardProps> = ({
         )}
         
         <div className="my-1.5 border-y border-double border-slate-300 py-1 inline-block px-4">
-          <span className="text-xs font-bold font-serif text-slate-900 tracking-wide">
-            {settings.universite.toUpperCase()} — {settings.departement.toUpperCase()}
-          </span>
+          <p className="text-xs font-bold font-serif text-slate-900 tracking-wide uppercase">
+            {settings.universite}
+          </p>
+          <p className="text-xs font-bold font-serif text-slate-800 tracking-wide uppercase mt-0.5">
+            {settings.departement}
+          </p>
         </div>
 
         <div className="flex flex-col sm:flex-row items-center justify-between text-left text-[11px] font-medium text-slate-700 px-2 mt-1">
@@ -148,9 +169,9 @@ export const OfficialDocumentCard: React.FC<OfficialDocumentCardProps> = ({
               <th className="border border-slate-400 p-2 text-left w-24">Date</th>
               <th className="border border-slate-400 p-2 text-left w-28">Horaire</th>
               <th className="border border-slate-400 p-2 text-left w-28">Salle / Amphi</th>
-              <th className="border border-slate-400 p-2 text-left">Module / Responsable</th>
+              <th className="border border-slate-400 p-2 text-left">Module</th>
               <th className="border border-slate-400 p-2 text-left w-28">Niveau</th>
-              <th className="border border-slate-400 p-2 text-center w-24">Rôle</th>
+              <th className="border border-slate-400 p-2 text-left w-36">Responsable de matière</th>
             </tr>
           </thead>
           <tbody>
@@ -174,23 +195,12 @@ export const OfficialDocumentCard: React.FC<OfficialDocumentCardProps> = ({
                   </td>
                   <td className="border border-slate-400 p-2">
                     <span className="font-bold text-slate-900">{slot.exam.nomModule}</span>
-                    <span className="text-[10px] text-slate-500 block font-mono">({slot.exam.codeModule})</span>
                   </td>
                   <td className="border border-slate-400 p-2 text-slate-700">
                     {slot.exam.niveau}
                   </td>
-                  <td className="border border-slate-400 p-2 text-center">
-                    <span
-                      className={`inline-block px-1.5 py-0.2 rounded text-[10px] font-bold ${
-                        slot.role === 'Surveillant Principal'
-                          ? 'bg-slate-800 text-white'
-                          : slot.role === 'Responsable de Matière'
-                          ? 'bg-amber-100 text-amber-900 border border-amber-300'
-                          : 'bg-slate-200 text-slate-800'
-                      }`}
-                    >
-                      {slot.role}
-                    </span>
+                  <td className="border border-slate-400 p-2 text-slate-800 font-semibold">
+                    {formatResponsableName(slot.exam)}
                   </td>
                 </tr>
               ))

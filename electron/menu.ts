@@ -109,13 +109,13 @@ export function createApplicationMenu(mainWindow: BrowserWindow): Menu {
       label: 'Aide',
       submenu: [
         {
-          label: 'À propos d\'ExamGuard',
+          label: 'À propos',
           click: () => {
             dialog.showMessageBox(mainWindow, {
               type: 'info',
-              title: 'ExamGuard — Système de Surveillance Universitaire',
-              message: 'ExamGuard v1.0.0',
-              detail: 'Application Desktop Native pour la Planification, l\'Attribution et la Surveillance des Examens Universitaires.\n\n© ExamGuard ASC - Tous droits réservés.',
+              title: 'À propos d\'ExamGuard',
+              message: 'ExamGuard — Version 2027-0',
+              detail: 'Développé par : Atallah M.\ne-mail : m.atallah@cu-elbayadh.dz\nDépartement d\'hydraulique et de génie civil\nCentre Universitaire Nour Bachir d\'El-Bayadh',
               buttons: ['Fermer']
             });
           }

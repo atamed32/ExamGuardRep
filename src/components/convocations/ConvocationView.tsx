@@ -133,22 +133,29 @@ export const ConvocationView: React.FC<ConvocationViewProps> = ({
     const filename = `Convocation_${currentTeacher.nom}_${currentTeacher.prenom}_${(settings.anneeUniversitaire || '2025-2026').replace(/[\s/]+/g, '_')}.pdf`;
     
     try {
-      ExportUtils.exportTeacherConvocationPDF(currentTeacher, exams, rooms, settings, filename);
-      if (onNotify) {
-        onNotify('success', 'Export PDF Réussi', `La convocation de ${currentTeacher.nom} ${currentTeacher.prenom} a été téléchargée au format A4.`);
+      const captureRes = await ExportUtils.exportElementAsPDF(documentElementId, filename, 'portrait');
+      if (captureRes.success) {
+        if (onNotify) {
+          onNotify('success', 'Export PDF Réussi', `La convocation de ${currentTeacher.nom} ${currentTeacher.prenom} a été téléchargée au format A4.`);
+        }
+      } else {
+        ExportUtils.exportTeacherConvocationPDF(currentTeacher, exams, rooms, settings, filename, undefined, teachers);
+        if (onNotify) {
+          onNotify('success', 'Export PDF Réussi', `La convocation de ${currentTeacher.nom} ${currentTeacher.prenom} a été téléchargée au format A4.`);
+        }
       }
     } catch (err) {
-      console.warn('Direct PDF export failed, trying element capture fallback', err);
-      const res = await ExportUtils.exportElementAsPDF(documentElementId, filename);
-      if (res.success) {
+      console.warn('Direct PDF export failed, trying generated layout fallback', err);
+      try {
+        ExportUtils.exportTeacherConvocationPDF(currentTeacher, exams, rooms, settings, filename, undefined, teachers);
         if (onNotify) {
           onNotify('success', 'Export PDF Réussi', `La convocation de ${currentTeacher.nom} ${currentTeacher.prenom} a été téléchargée.`);
         }
-      } else {
+      } catch (fallbackErr) {
         if (onNotify) {
-          onNotify('error', 'Erreur Export PDF', res.message || 'Impossible de générer le fichier PDF.');
+          onNotify('error', 'Erreur Export PDF', 'Impossible de générer le fichier PDF.');
         } else {
-          alert(res.message || 'Erreur lors de la génération du PDF.');
+          alert('Erreur lors de la génération du PDF.');
         }
       }
     } finally {
@@ -361,6 +368,7 @@ export const ConvocationView: React.FC<ConvocationViewProps> = ({
               settings={settings}
               language={language}
               documentId={documentElementId}
+              teachers={teachers}
             />
           ) : (
             <div className="p-12 text-center text-slate-400 text-xs">

@@ -67,8 +67,11 @@ export const PVModal: React.FC<PVModalProps> = ({
                 />
               </div>
             )}
-            <p className="font-bold uppercase text-[12px]">{settings.universite} — {settings.faculteInstitut}</p>
-            <p className="font-semibold text-[11px]">{settings.departement}</p>
+            <p className="font-bold uppercase text-[12px]">{settings.universite}</p>
+            <p className="font-semibold uppercase text-[11px]">{settings.departement}</p>
+            {settings.faculteInstitut && (
+              <p className="font-medium text-[11px] text-slate-700">{settings.faculteInstitut}</p>
+            )}
           </div>
 
           {/* PV Title */}

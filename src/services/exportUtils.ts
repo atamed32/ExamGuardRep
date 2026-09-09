@@ -487,10 +487,10 @@ export class ExportUtils {
         doc.text(institution.universite.toUpperCase(), pageWidth / 2, y, { align: 'center' });
         y += 4;
         doc.setFontSize(8);
-        doc.text(institution.faculteInstitut.toUpperCase(), pageWidth / 2, y, { align: 'center' });
+        doc.text(institution.departement.toUpperCase(), pageWidth / 2, y, { align: 'center' });
         y += 3.5;
         doc.setFontSize(8);
-        doc.text(institution.departement.toUpperCase(), pageWidth / 2, y, { align: 'center' });
+        doc.text(institution.faculteInstitut.toUpperCase(), pageWidth / 2, y, { align: 'center' });
         y += 5;
 
         // Title box
@@ -768,9 +768,26 @@ export class ExportUtils {
     rooms: Room[],
     settings?: InstitutionSettings,
     filename?: string,
-    existingDoc?: jsPDF
+    existingDoc?: jsPDF,
+    teachers: Teacher[] = []
   ): jsPDF {
     const roomMap = new Map(rooms.map(r => [r.id, r]));
+    const teacherMap = new Map((teachers.length > 0 ? teachers : [teacher]).map(item => [item.id, item]));
+
+    const formatResponsableName = (exam: Exam): string => {
+      const fromId = exam.responsableId ? teacherMap.get(exam.responsableId) : undefined;
+      if (fromId) {
+        return `${fromId.nom} ${fromId.prenom}`.trim();
+      }
+      for (const salle of exam.salles || []) {
+        const sv = (salle.surveillants || []).find(s => s.role === 'Responsable de Matière');
+        if (sv) {
+          const found = teacherMap.get(sv.teacherId);
+          if (found) return `${found.nom} ${found.prenom}`.trim();
+        }
+      }
+      return '';
+    };
     const institution: InstitutionSettings = settings || {
       republique: 'RÉPUBLIQUE ALGÉRIENNE DÉMOCRATIQUE ET POPULAIRE',
       ministere: "MINISTÈRE DE L'ENSEIGNEMENT SUPÉRIEUR ET DE LA RECHERCHE SCIENTIFIQUE",
@@ -846,23 +863,29 @@ export class ExportUtils {
       }
     }
 
-    // Institution Banner Box
+    // Institution Banner Box — university, then department immediately below
     doc.setFillColor(248, 250, 252); // slate-50
     doc.setDrawColor(203, 213, 225); // slate-300
     doc.setLineWidth(0.3);
-    doc.roundedRect(marginX, y, contentWidth, 12, 1, 1, 'FD');
+    doc.roundedRect(marginX, y, contentWidth, 16, 1, 1, 'FD');
 
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(8.5);
     doc.setTextColor(15, 23, 42); // slate-900
-    doc.text((institution.universite || '').toUpperCase(), pageWidth / 2, y + 4.5, { align: 'center' });
+    doc.text((institution.universite || '').toUpperCase(), pageWidth / 2, y + 5, { align: 'center' });
 
-    doc.setFont('helvetica', 'normal');
+    doc.setFont('helvetica', 'bold');
     doc.setFontSize(8);
-    doc.setTextColor(51, 65, 85);
-    const subInst = `${institution.faculteInstitut || ''} • ${institution.departement || ''}`;
-    doc.text(subInst.toUpperCase(), pageWidth / 2, y + 9.5, { align: 'center' });
-    y += 16;
+    doc.setTextColor(30, 41, 59);
+    doc.text((institution.departement || '').toUpperCase(), pageWidth / 2, y + 9.5, { align: 'center' });
+
+    if (institution.faculteInstitut) {
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(7.5);
+      doc.setTextColor(51, 65, 85);
+      doc.text(institution.faculteInstitut, pageWidth / 2, y + 13.5, { align: 'center' });
+    }
+    y += 20;
 
     // 2. Title Box: CONVOCATION OFFICIELLE
     doc.setFillColor(15, 23, 42); // slate-900
@@ -915,30 +938,31 @@ export class ExportUtils {
     doc.text('PLANNING DÉTAILLÉ DES SURVEILLANCES ASSIGNÉES', marginX, y);
     y += 3;
 
-    // Table Column Widths (Sum = 182mm)
+    // Table Column Widths (Sum = 182mm) — same order as on-screen convocation
     const tCols = [
-      { header: 'N°', width: 10, align: 'center' as const },
-      { header: 'Date', width: 26, align: 'left' as const },
+      { header: 'Date', width: 24, align: 'left' as const },
       { header: 'Horaire', width: 28, align: 'left' as const },
-      { header: 'Module / Matière & Niveau', width: 50, align: 'left' as const },
-      { header: 'Local / Salle', width: 34, align: 'left' as const },
-      { header: 'Rôle Assigné', width: 34, align: 'left' as const }
+      { header: 'Salle / Amphi', width: 30, align: 'left' as const },
+      { header: 'Module', width: 40, align: 'left' as const },
+      { header: 'Niveau', width: 28, align: 'left' as const },
+      { header: 'Responsable de matière', width: 32, align: 'left' as const }
     ];
 
     // Table Header
+    const headerHeight = 10;
     doc.setFillColor(30, 41, 59); // slate-800
-    doc.rect(marginX, y, contentWidth, 7, 'F');
+    doc.rect(marginX, y, contentWidth, headerHeight, 'F');
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(7.5);
+    doc.setFontSize(7);
     doc.setTextColor(255, 255, 255);
 
     let curX = marginX;
     tCols.forEach(c => {
-      const tx = c.align === 'center' ? curX + c.width / 2 : curX + 2;
-      doc.text(c.header, tx, y + 4.8, { align: c.align });
+      const headerLines = doc.splitTextToSize(c.header, c.width - 3);
+      doc.text(headerLines, curX + 1.5, y + 4);
       curX += c.width;
     });
-    y += 7;
+    y += headerHeight;
 
     if (assignedSlots.length === 0) {
       doc.setFillColor(255, 255, 255);
@@ -961,46 +985,39 @@ export class ExportUtils {
         doc.setTextColor(30, 41, 59);
 
         let rx = marginX;
-        // 1. N°
-        doc.text(String(index + 1), rx + tCols[0].width / 2, y + 5.2, { align: 'center' });
-        rx += tCols[0].width;
+        const clip = (text: string, maxChars: number) =>
+          text.length > maxChars ? `${text.slice(0, maxChars - 1)}…` : text;
 
-        // 2. Date
+        // 1. Date
         doc.setFont('helvetica', 'bold');
         doc.text(slot.exam.date || '', rx + 2, y + 5.2);
-        rx += tCols[1].width;
+        rx += tCols[0].width;
 
-        // 3. Horaire
+        // 2. Horaire
         doc.setFont('helvetica', 'normal');
         doc.text(`${slot.exam.heureDebut} - ${slot.exam.heureFin}`, rx + 2, y + 5.2);
+        rx += tCols[1].width;
+
+        // 3. Salle / Amphi
+        doc.setFont('helvetica', 'bold');
+        doc.text(clip(slot.roomName || '', 18), rx + 2, y + 5.2);
         rx += tCols[2].width;
 
-        // 4. Module & Niveau
-        const modTitle = slot.exam.nomModule.length > 25 ? `${slot.exam.nomModule.slice(0, 24)}…` : slot.exam.nomModule;
+        // 4. Module (name only, no module code)
         doc.setFont('helvetica', 'bold');
-        doc.text(modTitle, rx + 2, y + 3.8);
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(6.5);
-        doc.setTextColor(100, 116, 139);
-        doc.text(`${slot.exam.niveau || ''} (${slot.exam.codeModule || ''})`, rx + 2, y + 6.8);
-        doc.setFontSize(7.5);
-        doc.setTextColor(30, 41, 59);
+        doc.text(clip(slot.exam.nomModule || '', 24), rx + 2, y + 5.2);
         rx += tCols[3].width;
 
-        // 5. Local
-        doc.setFont('helvetica', 'bold');
-        doc.text(slot.roomName, rx + 2, y + 5.2);
+        // 5. Niveau
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(51, 65, 85);
+        doc.text(clip(slot.exam.niveau || '', 16), rx + 2, y + 5.2);
         rx += tCols[4].width;
 
-        // 6. Rôle
-        doc.setFont('helvetica', 'normal');
-        if (slot.role === 'Surveillant Principal') {
-          doc.setTextColor(3, 105, 161); // sky-700
-          doc.setFont('helvetica', 'bold');
-        } else {
-          doc.setTextColor(51, 65, 85);
-        }
-        doc.text(slot.role || 'Surveillant', rx + 2, y + 5.2);
+        // 6. Responsable de matière
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(30, 41, 59);
+        doc.text(clip(formatResponsableName(slot.exam), 18), rx + 2, y + 5.2);
 
         y += 8;
       });
@@ -1119,10 +1136,10 @@ export class ExportUtils {
 
     teachers.forEach((teacher, idx) => {
       if (idx === 0) {
-        doc = this.exportTeacherConvocationPDF(teacher, exams, rooms, settings, undefined, undefined);
+        doc = this.exportTeacherConvocationPDF(teacher, exams, rooms, settings, undefined, undefined, teachers);
       } else if (doc) {
         doc.addPage();
-        this.exportTeacherConvocationPDF(teacher, exams, rooms, settings, undefined, doc);
+        this.exportTeacherConvocationPDF(teacher, exams, rooms, settings, undefined, doc, teachers);
       }
     });
 
@@ -1514,8 +1531,7 @@ export class ExportUtils {
       const cleanPrenom = (teacher.prenom || '').trim().replace(/\s+/g, '_');
       const filename = `Convocation_${cleanNom}_${cleanPrenom}.pdf`;
 
-      // Generate single teacher PDF
-      const doc = this.exportTeacherConvocationPDF(teacher, exams, rooms, settings, undefined, undefined);
+      const doc = this.exportTeacherConvocationPDF(teacher, exams, rooms, settings, undefined, undefined, teachers);
       const dataUri = doc.output('datauristring');
       convocationsData.push({
         teacherName: `${teacher.nom} ${teacher.prenom}`,
