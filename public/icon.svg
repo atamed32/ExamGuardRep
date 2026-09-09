@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#090d16" />
+      <stop offset="50%" stop-color="#1e293b" />
+      <stop offset="100%" stop-color="#090d16" />
+    </linearGradient>
+    <linearGradient id="emeraldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#34d399" />
+      <stop offset="100%" stop-color="#059669" />
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fbbf24" />
+      <stop offset="100%" stop-color="#d97706" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background Base -->
+  <rect x="24" y="24" width="464" height="464" rx="100" fill="url(#shieldGrad)" stroke="#334155" stroke-width="8" />
+
+  <!-- Academic / Security Shield -->
+  <path d="M 256,70 L 400,120 C 400,280 256,410 256,430 C 256,410 112,280 112,120 Z" 
+        fill="#1e293b" stroke="url(#emeraldGrad)" stroke-width="12" />
+
+  <!-- Graduation Cap -->
+  <path d="M 256,160 L 360,205 L 256,250 L 152,205 Z" fill="url(#emeraldGrad)" />
+  <path d="M 200,227 L 200,265 C 200,290 312,290 312,265 L 312,227" fill="none" stroke="#34d399" stroke-width="8" stroke-linecap="round" />
+  
+  <!-- Tassel -->
+  <path d="M 335,215 L 345,265" fill="none" stroke="url(#goldGrad)" stroke-width="5" stroke-linecap="round" />
+  <circle cx="345" cy="270" r="6" fill="#fbbf24" />
+
+  <!-- Checkmark Emblem -->
+  <circle cx="256" cy="335" r="45" fill="#0f172a" stroke="#10b981" stroke-width="6" />
+  <path d="M 235,335 L 250,350 L 280,318" fill="none" stroke="#34d399" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" />
+</svg>

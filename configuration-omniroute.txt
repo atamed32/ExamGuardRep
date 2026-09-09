@@ -1,0 +1,10 @@
+$env:CLAUDE_CONFIG_DIR = "$HOME\.claude-omniroute"
+
+$env:ANTHROPIC_BASE_URL = "http://localhost:20128"
+
+$env:ANTHROPIC_AUTH_TOKEN = "sk-eb3d8393fb365f42-251814-eb938535"
+
+$env:ANTHROPIC_API_KEY = ""
+
+$env:ANTHROPIC_MODEL = "AntigravityAtamed"
+

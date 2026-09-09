@@ -1,0 +1,8 @@
+{
+  "name": "ExamGuard",
+  "description": "Système d'Élaboration, d'Optimisation & de Gestion des Emplois du Temps d'Examens Universitaires",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

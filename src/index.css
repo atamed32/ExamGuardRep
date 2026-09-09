@@ -1,0 +1,458 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *, .dark, .dark *));
+
+:root {
+  /* Default Light Design Tokens */
+  --bg-app: #f8fafc;
+  --bg-primary: #ffffff;
+  --bg-secondary: #f1f5f9;
+  --bg-tertiary: #e2e8f0;
+  --bg-card: #ffffff;
+  --bg-elevated: #ffffff;
+  --bg-hover: #f1f5f9;
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+  --border-color: #cbd5e1;
+  --border-subtle: #e2e8f0;
+  --accent-color: #059669; /* Emerald */
+  --accent-hover: #047857;
+  --accent-light: #ecfdf5;
+  --accent-text: #065f46;
+  --ring-color: rgba(5, 150, 105, 0.25);
+  color-scheme: light;
+}
+
+/* Light Theme Mode Explicit */
+html[data-theme="light"] {
+  --bg-app: #f8fafc;
+  --bg-primary: #ffffff;
+  --bg-secondary: #f1f5f9;
+  --bg-tertiary: #e2e8f0;
+  --bg-card: #ffffff;
+  --bg-elevated: #ffffff;
+  --bg-hover: #f8fafc;
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+  --border-color: #cbd5e1;
+  --border-subtle: #e2e8f0;
+  --accent-color: #059669;
+  --accent-hover: #047857;
+  --accent-light: #ecfdf5;
+  --accent-text: #065f46;
+  --ring-color: rgba(5, 150, 105, 0.25);
+  color-scheme: light;
+}
+
+/* Dark Theme Mode (Default aSc dark look) */
+html[data-theme="dark"] {
+  --bg-app: #090d16;
+  --bg-primary: #0f172a;
+  --bg-secondary: #1e293b;
+  --bg-tertiary: #334155;
+  --bg-card: #0f172a;
+  --bg-elevated: #1e293b;
+  --bg-hover: #1e293b;
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --border-color: #334155;
+  --border-subtle: #1e293b;
+  --accent-color: #10b981;
+  --accent-hover: #059669;
+  --accent-light: rgba(16, 185, 129, 0.15);
+  --accent-text: #6ee7b7;
+  --ring-color: rgba(16, 185, 129, 0.35);
+  color-scheme: dark;
+}
+
+/* High Contrast Mode Adjustments */
+html[data-contrast="high"] {
+  --border-color: #64748b !important;
+  --text-muted: #475569 !important;
+}
+
+html[data-theme="dark"][data-contrast="high"] {
+  --border-color: #94a3b8 !important;
+  --text-muted: #cbd5e1 !important;
+  --text-secondary: #f1f5f9 !important;
+}
+
+/* Accent Color Variations */
+html[data-accent="indigo"] {
+  --accent-color: #6366f1;
+  --accent-hover: #4f46e5;
+  --accent-light: rgba(99, 102, 241, 0.15);
+  --accent-text: #818cf8;
+  --ring-color: rgba(99, 102, 241, 0.3);
+}
+
+html[data-accent="blue"] {
+  --accent-color: #2563eb;
+  --accent-hover: #1d4ed8;
+  --accent-light: rgba(37, 99, 235, 0.15);
+  --accent-text: #60a5fa;
+  --ring-color: rgba(37, 99, 235, 0.3);
+}
+
+html[data-accent="amber"] {
+  --accent-color: #d97706;
+  --accent-hover: #b45309;
+  --accent-light: rgba(217, 119, 6, 0.15);
+  --accent-text: #fbbf24;
+  --ring-color: rgba(217, 119, 6, 0.3);
+}
+
+html[data-accent="rose"] {
+  --accent-color: #e11d48;
+  --accent-hover: #be123c;
+  --accent-light: rgba(225, 29, 72, 0.15);
+  --accent-text: #fb7185;
+  --ring-color: rgba(225, 29, 72, 0.3);
+}
+
+@layer base {
+  body {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background-color: var(--bg-app);
+    color: var(--text-primary);
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  }
+
+  [dir="rtl"] {
+    font-family: 'Cairo', 'Plus Jakarta Sans', system-ui, sans-serif;
+  }
+}
+
+/* ==========================================================================
+   GLOBAL THEME CONSISTENCY RULES FOR SOMBRE & CLAIR
+   All modal windows, dialogs, tables, cards, inputs must strictly adhere
+   to the chosen theme with high contrast and crystal-clear readability.
+   ========================================================================== */
+
+/* --- DARK MODE THEME ENFORCEMENT --- */
+html[data-theme="dark"] body {
+  background-color: #090d16 !important;
+  color: #f8fafc !important;
+}
+
+/* Modals & Dialogs in Dark Mode */
+html[data-theme="dark"] [role="dialog"],
+html[data-theme="dark"] .fixed.inset-0 > div:not(.official-document-print):not(.official-planning-card),
+html[data-theme="dark"] .modal-content:not(.official-document-print):not(.official-planning-card) {
+  background-color: #0f172a !important;
+  color: #f8fafc !important;
+  border-color: #334155 !important;
+}
+
+/* Tables in Dark Mode */
+html[data-theme="dark"] table:not(.official-document-print table):not(.official-planning-card table):not(#official-exam-timetable-document table) {
+  background-color: #090d16 !important;
+  color: #f8fafc !important;
+}
+
+html[data-theme="dark"] table:not(.official-document-print table):not(.official-planning-card table):not(#official-exam-timetable-document table) thead {
+  background-color: #0f172a !important;
+  color: #f8fafc !important;
+}
+
+html[data-theme="dark"] table:not(.official-document-print table):not(.official-planning-card table):not(#official-exam-timetable-document table) th {
+  color: #f8fafc !important;
+}
+
+html[data-theme="dark"] table:not(.official-document-print table):not(.official-planning-card table):not(#official-exam-timetable-document table) td {
+  border-color: #1e293b !important;
+}
+
+/* Base Utility Overrides for Dark Mode */
+html[data-theme="dark"] .bg-white:not(.official-document-print):not(.official-planning-card):not(#official-exam-timetable-document) {
+  background-color: #0f172a !important;
+  color: #f8fafc !important;
+}
+
+html[data-theme="dark"] .bg-slate-50:not(.official-document-print):not(.official-planning-card),
+html[data-theme="dark"] .bg-slate-50\/50:not(.official-document-print):not(.official-planning-card),
+html[data-theme="dark"] .bg-slate-50\/80:not(.official-document-print):not(.official-planning-card) {
+  background-color: #1e293b !important;
+  color: #f8fafc !important;
+}
+
+html[data-theme="dark"] .border-slate-100,
+html[data-theme="dark"] .border-slate-200 {
+  border-color: #334155 !important;
+}
+
+html[data-theme="dark"] .text-slate-900:not(.official-document-print *):not(.official-planning-card *),
+html[data-theme="dark"] .text-slate-800:not(.official-document-print *):not(.official-planning-card *) {
+  color: #f8fafc !important;
+}
+
+html[data-theme="dark"] .text-slate-700:not(.official-document-print *):not(.official-planning-card *),
+html[data-theme="dark"] .text-slate-600:not(.official-document-print *):not(.official-planning-card *) {
+  color: #cbd5e1 !important;
+}
+
+html[data-theme="dark"] .text-slate-500:not(.official-document-print *):not(.official-planning-card *) {
+  color: #94a3b8 !important;
+}
+
+html[data-theme="dark"] .hover\:bg-slate-50:hover {
+  background-color: #1e293b !important;
+}
+
+html[data-theme="dark"] .hover\:bg-slate-100:hover {
+  background-color: #334155 !important;
+}
+
+html[data-theme="dark"] input:not([type="checkbox"]):not([type="radio"]):not([type="color"]),
+html[data-theme="dark"] select,
+html[data-theme="dark"] textarea {
+  color: #f8fafc !important;
+  background-color: #1e293b !important;
+  border-color: #475569 !important;
+}
+
+html[data-theme="dark"] input::placeholder,
+html[data-theme="dark"] textarea::placeholder {
+  color: #64748b !important;
+}
+
+/* --- LIGHT MODE THEME ENFORCEMENT --- */
+html[data-theme="light"] body {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+}
+
+/* Modals & Dialogs in Light Mode: Must have crisp white background and clear dark text */
+html[data-theme="light"] [role="dialog"],
+html[data-theme="light"] .fixed.inset-0 > div,
+html[data-theme="light"] .modal-content {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #e2e8f0 !important;
+}
+
+/* Tables in Light Mode: Must have crisp light background and clear dark text */
+html[data-theme="light"] table {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+}
+
+html[data-theme="light"] table thead {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+}
+
+html[data-theme="light"] table th {
+  color: #0f172a !important;
+}
+
+/* Inputs & Form Controls in Light Mode */
+html[data-theme="light"] input:not([type="checkbox"]):not([type="radio"]):not([type="color"]),
+html[data-theme="light"] select,
+html[data-theme="light"] textarea {
+  color: #0f172a !important;
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+}
+
+html[data-theme="light"] input::placeholder,
+html[data-theme="light"] textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+/* In Light Mode, normalize any deep dark backgrounds in modals, drawers and cards */
+html[data-theme="light"] [role="dialog"] .bg-slate-900:not(button),
+html[data-theme="light"] [role="dialog"] .bg-slate-950:not(button),
+html[data-theme="light"] .fixed.inset-0 > div .bg-slate-900:not(button),
+html[data-theme="light"] .fixed.inset-0 > div .bg-slate-950:not(button) {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+  border-color: #e2e8f0 !important;
+}
+
+html[data-theme="light"] [role="dialog"] .text-slate-100,
+html[data-theme="light"] [role="dialog"] .text-slate-200,
+html[data-theme="light"] [role="dialog"] .text-slate-300,
+html[data-theme="light"] .fixed.inset-0 > div .text-slate-100,
+html[data-theme="light"] .fixed.inset-0 > div .text-slate-200,
+html[data-theme="light"] .fixed.inset-0 > div .text-slate-300 {
+  color: #0f172a !important;
+}
+
+html[data-theme="light"] [role="dialog"] .border-slate-700,
+html[data-theme="light"] [role="dialog"] .border-slate-800,
+html[data-theme="light"] .fixed.inset-0 > div .border-slate-700,
+html[data-theme="light"] .fixed.inset-0 > div .border-slate-800 {
+  border-color: #e2e8f0 !important;
+}
+
+/* Print optimizations for A4 official administrative documents */
+@media print {
+  /* Default print page setup */
+  @page {
+    size: A4 portrait;
+    margin: 8mm 10mm;
+  }
+
+  /* Specific Landscape page for official exam timetable planning */
+  @page official-planning-landscape {
+    size: A4 landscape;
+    margin: 5mm 7mm;
+  }
+
+  body.printing-official-planning {
+    font-family: 'Times New Roman', Times, serif !important;
+  }
+
+  html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Hide app navigation, ribbons, sidebars, buttons during print */
+  .no-print,
+  #root > nav,
+  #root > header,
+  aside,
+  .toast-container {
+    display: none !important;
+  }
+
+  /* Show print-only elements */
+  .print-only {
+    display: block !important;
+  }
+
+  /* When printing official planning document: hide header/nav/tools and isolate document */
+  body.printing-official-planning header,
+  body.printing-official-planning nav,
+  body.printing-official-planning aside,
+  body.printing-official-planning .toast-container,
+  body.printing-official-planning .no-print {
+    display: none !important;
+  }
+
+  body.printing-official-planning .official-modal-backdrop {
+    position: static !important;
+    inset: auto !important;
+    background: transparent !important;
+    backdrop-filter: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    display: block !important;
+  }
+
+  body.printing-official-planning .official-modal-dialog {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    background: #ffffff !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: visible !important;
+  }
+
+  /* Ensure official document card takes full A4 landscape width */
+  .official-planning-card,
+  #official-exam-timetable-document {
+    page: official-planning-landscape;
+    box-shadow: none !important;
+    border: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 2mm 0 0 0 !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+    overflow: visible !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  #official-exam-timetable-document table {
+    width: 100% !important;
+    table-layout: fixed !important;
+    border-collapse: collapse !important;
+  }
+
+  #official-exam-timetable-document table th,
+  #official-exam-timetable-document table td {
+    border: 1px solid #000000 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Official Convocations (Portrait) */
+  .official-document-print {
+    box-shadow: none !important;
+    border: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  .page-break-after-always {
+    page-break-after: always;
+    break-after: page;
+  }
+
+  .keep-together {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+}
+
+/* Official administrative documents always retain authentic white paper & crisp black text on screen in all themes */
+#official-exam-timetable-document,
+.official-planning-card,
+.official-document-print {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+#official-exam-timetable-document *,
+.official-planning-card *,
+.official-document-print * {
+  color: #000000 !important;
+}
+
+#official-exam-timetable-document table,
+.official-planning-card table,
+.official-document-print table {
+  background-color: #ffffff !important;
+  border-color: #000000 !important;
+}
+
+#official-exam-timetable-document th,
+#official-exam-timetable-document td,
+.official-planning-card th,
+.official-planning-card td {
+  background-color: #ffffff !important;
+  border-color: #000000 !important;
+  color: #000000 !important;
+}
+
+#official-exam-timetable-document .official-banner,
+.official-planning-card .official-banner {
+  background-color: #7ba4d9 !important;
+  color: #000000 !important;
+}

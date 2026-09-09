@@ -1,0 +1,54 @@
+{
+  "appId": "com.examguard.app",
+  "productName": "ExamGuard",
+  "copyright": "Copyright © 2027 Atallah M. - Centre Universitaire Nour Bachir d'El-Bayadh",
+  "directories": {
+    "output": "release",
+    "buildResources": "build"
+  },
+  "files": [
+    "dist/**/*",
+    "dist-electron/**/*",
+    "build/icon.ico",
+    "build/icon.png",
+    "package.json"
+  ],
+  "extraMetadata": {
+    "main": "dist-electron/main.cjs"
+  },
+  "win": {
+    "target": [
+      {
+        "target": "nsis",
+        "arch": ["x64"]
+      },
+      {
+        "target": "portable",
+        "arch": ["x64"]
+      }
+    ],
+    "icon": "build/icon.ico",
+    "fileAssociations": [
+      {
+        "ext": "examguard",
+        "name": "ExamGuard Project File",
+        "description": "Fichier de session et planning d'examens ExamGuard",
+        "role": "Editor",
+        "icon": "build/icon.ico"
+      }
+    ]
+  },
+  "nsis": {
+    "artifactName": "${productName}-Setup-${version}.${ext}",
+    "oneClick": false,
+    "allowToChangeInstallationDirectory": true,
+    "createDesktopShortcut": "always",
+    "createStartMenuShortcut": true,
+    "shortcutName": "ExamGuard",
+    "uninstallDisplayName": "ExamGuard — Surveillance des Examens",
+    "runAfterFinish": true
+  },
+  "portable": {
+    "artifactName": "${productName}-Portable-${version}.${ext}"
+  }
+}
